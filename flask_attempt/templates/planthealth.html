@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant Disease Recognition</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to right, #004d40, #66bb6a);
+            color: white;
+            height: 100vh;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 50%;
+        }
+        .card-header {
+            background-color: #004d40;
+            color: white;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+        .card-body {
+            background-color: white;
+            color: black;
+            padding: 20px;
+        }
+        .btn-primary {
+            background-color: #66bb6a;
+            border-color: #66bb6a;
+        }
+        .btn-primary:hover {
+            background-color: #338a3e;
+            border-color: #338a3e;
+        }
+        .btn-secondary {
+            background-color: #004d40;
+            border-color: #004d40;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: #00251a;
+            border-color: #00251a;
+        }
+        .instruction {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header text-center">
+                <h1>Upload an Image for Disease Recognition</h1>
+            </div>
+            <div class="card-body">
+                <form method="post" action="{{ url_for('checking_plant_health') }}" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <input type="file" name="file" accept="image/*" class="form-control-file">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Analyze Image</button>
+                </form>
+                {% if prediction %}
+                <h2 class="mt-4">Prediction Result:</h2>
+                <p>{{ prediction }}</p>
+                {% endif %}
+                <!-- Back Button -->
+                <a href="{{ url_for('homepage') }}" class="btn btn-secondary btn-block mt-3">Back to Home</a>
+            </div>
+        </div>
+        <p class="instruction text-white">
+            Please pluck the affected leaf and place it on a plain background without any body parts or objects in the image.
+        </p>
+    </div>
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

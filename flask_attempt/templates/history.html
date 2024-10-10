@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant History</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-color: #f4f6f9; /* Professional light background */
+            color: #333;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow for a professional look */
+        }
+
+        h1 {
+            font-size: 32px;
+            color: #004d40; /* Dark green to maintain your theme */
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th, table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #004d40; /* Dark green header for professionalism */
+            color: white;
+            font-weight: bold;
+        }
+
+        td {
+            background-color: #f9f9f9;
+        }
+
+        /* Zebra striping for rows */
+        tr:nth-child(even) td {
+            background-color: #f1f1f1;
+        }
+
+        .btn-primary {
+            background-color: #004d40;
+            border-color: #004d40;
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+
+        .btn-primary:hover {
+            background-color: #338a3e;
+            border-color: #338a3e;
+        }
+
+        .no-records {
+            text-align: center;
+            font-size: 18px;
+            color: #666;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sold Plant History</h1>
+
+        {% if sold_plants %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Plant Name</th>
+                    <th>Location</th>
+                    <th>Total Cost</th>
+                    <th>Selling Price</th>
+                    <th>Date Sold</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for plant in sold_plants %}
+                <tr>
+                    <td>{{ plant[0] }}</td>  <!-- Plant Name -->
+                    <td>{{ plant[4] }}</td>  <!-- Location -->
+                    <td>${{ plant[2] }}</td>  <!-- Total Cost -->
+                    <td>${{ plant[1] }}</td>  <!-- Selling Price -->
+                    <td>{{ plant[3] }}</td>  <!-- Date Sold -->
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="no-records">No plants have been sold yet.</p>
+        {% endif %}
+
+        <a href="{{ url_for('homepage') }}" class="btn btn-primary">Back to Homepage</a>
+    </div>
+
+    <!-- Bootstrap JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

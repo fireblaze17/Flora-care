@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculate Profit</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background: linear-gradient(to right, #004d40, #66bb6a); /* Background gradient to match theme */
+            color: white;
+            font-family: Arial, sans-serif; /* Consistent font */
+        }
+        .container {
+            background-color: #004d40; /* Dark green background */
+            color: white;
+            padding: 20px;
+            border-radius: 10px; /* Rounded corners */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
+            max-width: 500px; /* Keeps the form from stretching too wide */
+            margin: 50px auto; /* Centers the container */
+        }
+        h2 {
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+        label {
+            font-size: 18px;
+            color: #66bb6a; /* Light green text for labels */
+        }
+        .form-control {
+            border-radius: 5px;
+            border: none;
+            padding: 10px;
+            background-color: #e0e0e0; /* Light background for the input fields */
+            color: #333;
+        }
+        .form-control:focus {
+            border-color: #004d40; /* Matches the dark green theme */
+            box-shadow: 0 0 8px rgba(0, 77, 64, 0.3); /* Focus shadow effect */
+        }
+        .btn-primary {
+            background-color: #66bb6a;
+            border-color: #66bb6a;
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .btn-primary:hover {
+            background-color: #338a3e; /* Darker green on hover */
+            border-color: #338a3e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Calculate Profit for Plant</h2>
+        <form method="POST">
+            <label for="profit_percentage">Enter Desired Profit Percentage:</label>
+            <input type="number" step="0.01" id="profit_percentage" name="profit_percentage" class="form-control" required>
+            <button type="submit" class="btn btn-primary mt-3">Calculate Selling Price</button>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
