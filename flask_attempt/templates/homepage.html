@@ -158,39 +158,38 @@ h2 {
         <button type="submit" style="width: 100%; padding: 15px; background-color: #004d40; color: white; border: none;">Analytics</button>
     </form>
 </div>
+<div class="form-container">
+    <form action="{{ url_for('search_plants') }}" method="get" style="display: flex; width: 50%; justify-content: space-between;">
+        <input type="text" name="query" placeholder="Search for plants..." style="margin-top: 0;">
+        <button type="submit">Search</button>
+    </form>
+</div>
 
+<div class="plant-container">
+    {% for plant in plants %}
+    <div class="plant-box" id="plant-{{ plant.plant_id }}">
+        <h3>{{ plant.plant_name }}</h3>
+        <p>Location: {{ plant.location }}</p>
+        <p>Watering Frequency: {{ plant.watering_frequency }} minutes</p>
+        <div>
+            <button onclick="resetTimer({{ plant.plant_id }}, {{ plant.watering_frequency }}); location.reload();">Reset Timer</button>
+            
+            <form action="{{ url_for('deleteplant', plant_id=plant.plant_id) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this plant?');" style="display: inline;">
+                <button type="submit">Delete Plant</button>
+            </form>
 
-    <div class="form-container">
-        <form action="{{ url_for('search_plants') }}" method="get" style="display: flex; width: 50%; justify-content: space-between;">
-            <input type="text" name="query" placeholder="Search for plants..." style="margin-top: 0;">
-            <button type="submit">Search</button>
-        </form>
-    </div>
+            <form action="{{ url_for('editplant', plant_id=plant.plant_id) }}" method="get" style="display: inline;">
+                <button type="submit">Edit Plant</button>
+            </form>
 
-    <div class="plant-container">
-        {% for plant in plants %}
-        <div class="plant-box" id="plant-{{ plant[0] }}">
-            <h3>{{ plant[1] }}</h3>
-            <p>Location: {{ plant[2] }}</p>
-            <p>Watering Frequency: {{ plant[3] }} hours</p>
-            <div>
-                <button onclick="resetTimer({{ plant[0] }}, {{ plant[3] }}); location.reload();">Reset Timer</button>
-                
-                <form action="{{ url_for('deleteplant', plant_id=plant[0]) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this plant?');" style="display: inline;">
-                    <button type="submit">Delete Plant</button>
-                </form>
-    
-                <form action="{{ url_for('editplant', plant_id=plant[0]) }}" method="get" style="display: inline;">
-                    <button type="submit">Edit Plant</button>
-                </form>
-    
-                <form action="{{ url_for('calculate_profit', plant_id=plant[0]) }}" method="get" style="display: inline;">
-                    <button type="submit" class="btn btn-success">Sell Plant</button>
-                </form>
-            </div>
+            <form action="{{ url_for('calculate_profit', plant_id=plant.plant_id) }}" method="get" style="display: inline;">
+                <button type="submit" class="btn btn-success">Sell Plant</button>
+            </form>
         </div>
-        {% endfor %}
     </div>
+    {% endfor %}
+</div>
+
  
     
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -198,81 +197,82 @@ h2 {
     <script src="{{ url_for('static', filename='firebase-init.js') }}"></script>
     <script>
        function openNav() {
-            document.getElementById("mySidebar").style.width = "250px";
-            document.getElementById("openSidebar").style.opacity = "0"; // Hide open button
-        }
-        
-        function closeNav() {
-            document.getElementById("mySidebar").style.width = "0";
-            document.getElementById("openSidebar").style.opacity = "1"; // Show open button
-        }
-        
-        let timers = {};
+    document.getElementById("mySidebar").style.width = "250px";
+    document.getElementById("openSidebar").style.opacity = "0"; // Hide open button
+}
 
-        function resetTimer(plantId, frequency) {
-            fetch(`/reset_timer/${plantId}`, {
-                method: 'POST'
-            }).then(response => response.json())
-              .then(data => {
-                  if (data.status === 'success') {
-                      const plantBox = document.getElementById('plant-' + plantId);
-                      plantBox.classList.remove('red');
-                      if (timers[plantId]) {
-                          clearTimeout(timers[plantId]);
-                      }
+function closeNav() {
+    document.getElementById("mySidebar").style.width = "0";
+    document.getElementById("openSidebar").style.opacity = "1"; // Show open button
+}
+
+let timers = {};
+
+function resetTimer(plantId, frequency) {
+    fetch(`/reset_timer/${plantId}`, {
+        method: 'POST'
+    }).then(response => response.json())
+      .then(data => {
+          if (data.status === 'success') {
+              const plantBox = document.getElementById('plant-' + plantId);
+              plantBox.classList.remove('red');
+              if (timers[plantId]) {
+                  clearTimeout(timers[plantId]);
+              }
+              timers[plantId] = setTimeout(() => {
+                  plantBox.classList.add('red');
+              }, frequency * 60 * 1000); // Convert minutes to milliseconds
+
+              // Update the server to mark as reset
+              fetch(`/update_plant_state/${plantId}`, {
+                  method: 'POST',
+                  headers: {'Content-Type': 'application/json'}
+              }).then(response => response.json())
+                .then(data => {
+                    if (data.status !== 'success') {
+                        console.error(data.message);
+                    }
+                }).catch(error => console.error('Error:', error));
+          } else {
+              console.error(data.message);
+          }
+      }).catch(error => console.error('Error:', error));
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const plantData = {{ plants | tojson | safe }};
+
+    plantData.forEach(plant => {
+        const plantId = plant.plant_id;
+        const frequency = plant.watering_frequency;
+        fetch(`/get_last_reset/${plantId}`, {
+            method: 'GET'
+        }).then(response => response.json())
+          .then(data => {
+              if (data.status === 'success') {
+                  const lastResetTime = new Date(data.last_reset).getTime();
+                  const currentTime = Date.now();
+                  const elapsedTime = currentTime - lastResetTime;
+                  const remainingTime = (frequency * 60 * 1000) - elapsedTime;
+
+                  const plantBox = document.getElementById('plant-' + plantId);
+
+                  if (remainingTime <= 0) {
+                      // Immediately add red class if overdue
+                      plantBox.classList.add('red');
+                  } else {
+                      // Add red class after remaining time
                       timers[plantId] = setTimeout(() => {
                           plantBox.classList.add('red');
-                      }, frequency * 60 * 1000); // Convert hours to milliseconds
-
-                      // Update the server to mark as reset
-                      fetch(`/update_plant_state/${plantId}`, {
-                          method: 'POST',
-                          headers: {'Content-Type': 'application/json'}
-                      }).then(response => response.json())
-                        .then(data => {
-                            if (data.status !== 'success') {
-                                console.error(data.message);
-                            }
-                        }).catch(error => console.error('Error:', error));
-                  } else {
-                      console.error(data.message);
+                      }, remainingTime);
                   }
-              }).catch(error => console.error('Error:', error));
-        }
+              } else {
+                  console.error(data.message);
+              }
+          }).catch(error => console.error('Error:', error));
+    });
+});
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const plantData = {{ plants|tojson|safe }};
-
-            plantData.forEach(plant => {
-                const plantId = plant[0];
-                const frequency = plant[3];
-                fetch(`/get_last_reset/${plantId}`, {
-                    method: 'GET'
-                }).then(response => response.json())
-                  .then(data => {
-                      if (data.status === 'success') {
-                          const lastResetTime = new Date(data.last_reset).getTime();
-                          const currentTime = Date.now();
-                          const elapsedTime = currentTime - lastResetTime;
-                          const remainingTime = (frequency * 60 * 1000) - elapsedTime;
-
-                          const plantBox = document.getElementById('plant-' + plantId);
-
-                          if (remainingTime <= 0) {
-                              // Immediately add red class if overdue
-                              plantBox.classList.add('red');
-                          } else {
-                              // Add red class after remaining time
-                              timers[plantId] = setTimeout(() => {
-                                  plantBox.classList.add('red');
-                              }, remainingTime);
-                          }
-                      } else {
-                          console.error(data.message);
-                      }
-                  }).catch(error => console.error('Error:', error));
-            });
-        });
     </script>
 </body>
 </html>
