@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Plant</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background: linear-gradient(to right, #004d40, #66bb6a); /* Consistent with the other pages */
+            color: white;
+            font-family: Arial, sans-serif; /* Ensuring consistent font */
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            background-color: #004d40; /* Matching theme */
+            color: white;
+            border-bottom: none;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+        .card-body {
+            background-color: white;
+            color: black;
+        }
+        .form-control:focus {
+            border-color: #004d40;
+            box-shadow: 0 0 8px rgba(0, 77, 64, 0.3);
+        }
+        .btn-primary {
+            background-color: #66bb6a;
+            border-color: #66bb6a;
+        }
+        .btn-primary:hover {
+            background-color: #338a3e;
+            border-color: #338a3e;
+        }
+        .text-primary {
+            color: #004d40 !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container d-flex justify-content-center align-items-center min-vh-100">
+        <div class="card w-75">
+            <div class="card-header text-center">
+                <h2>Edit Plant</h2>
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('editplant', plant_id=plant.plant_id) }}" method="post">
+                    <div class="form-group">
+                        <label for="plant_name" class="text-primary">Plant Name:</label>
+                        <input type="text" id="plant_name" name="plant_name" class="form-control" value="{{ plant.plant_name }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="location" class="text-primary">Location:</label>
+                        <input type="text" id="location" name="location" class="form-control" value="{{ plant.location }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="watering_frequency" class="text-primary">Watering Frequency (minutes):</label>
+                        <input type="number" id="watering_frequency" name="watering_frequency" class="form-control" value="{{ plant.watering_frequency }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="seed_cost" class="text-primary">Seed Cost:</label>
+                        <input type="number" step="0.01" id="seed_cost" name="seed_cost" class="form-control" value="{{ plant.seed_cost }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="soil_cost" class="text-primary">Soil Cost:</label>
+                        <input type="number" step="0.01" id="soil_cost" name="soil_cost" class="form-control" value="{{ plant.soil_cost }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="pot_cost" class="text-primary">Pot Cost:</label>
+                        <input type="number" step="0.01" id="pot_cost" name="pot_cost" class="form-control" value="{{ plant.pot_cost }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="monthly_cost" class="text-primary">Monthly Cost:</label>
+                        <input type="number" step="0.01" id="monthly_cost" name="monthly_cost" class="form-control" value="{{ plant.monthly_cost }}" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Update Plant</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background: linear-gradient(to right, #004d40, #66bb6a); /* Consistent with the sign-up page */
+            color: white;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            background-color: #004d40; /* Matching theme */
+            border-bottom: none;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+        .card-body {
+            background-color: white;
+            color: black;
+        }
+        .form-control:focus {
+            border-color: #004d40;
+            box-shadow: 0 0 8px rgba(0, 77, 64, 0.3);
+        }
+        .btn-primary {
+            background-color: #66bb6a;
+            border-color: #66bb6a;
+        }
+        .btn-primary:hover {
+            background-color: #338a3e;
+            border-color: #338a3e;
+        }
+        .text-primary {
+            color: #004d40 !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container d-flex justify-content-center align-items-center min-vh-100">
+        <div class="card w-50">
+            <div class="card-header text-center text-white">
+                <h2>Login</h2>
+            </div>
+            <div class="card-body">
+                <form id="login-form" action="/login" method="post">
+                    <div class="form-group">
+                        <label for="email" class="text-primary">Email:</label>
+                        <input type="text" id="email" name="email" class="form-control" placeholder="Enter your email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password" class="text-primary">Password:</label>
+                        <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required>
+                    </div>
+                    <input type="hidden" id="token" name="token">
+                    <button type="submit" class="btn btn-primary btn-block">Log In</button>
+                </form>
+                <div class="text-center mt-3">
+                    <p>Don't have an account? <a href="/signup" class="text-primary">Sign Up</a></p>
+                </div>
+            </div>
+        </div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} mt-3">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-messaging.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyC93TUOkpDwvU5hUQXsY-uYGm4RmkRyhIU",
+            authDomain: "computer-science-ia-floracare.firebaseapp.com",
+            projectId: "computer-science-ia-floracare",
+            storageBucket: "computer-science-ia-floracare.appspot.com",
+            messagingSenderId: "683749873930",
+            appId: "1:683749873930:web:8a4b5d9a2c1ddb5c1c82f3",
+            measurementId: "G-G4FYWE9WYM"
+        };
+        firebase.initializeApp(firebaseConfig);
+        
+        if ('serviceWorker' in navigator && 'PushManager' in window) {
+    navigator.serviceWorker.register('/firebase-messaging-sw.js')
+    .then(function(registration) {
+        console.log('Service Worker registered with scope: ', registration.scope);
+        const messaging = firebase.messaging();
+        messaging.useServiceWorker(registration);
+
+         return messaging.requestPermission()
+            .then(function() {
+                console.log('Notification permission granted.');
+                // Get the token
+                return messaging.getToken({ vapidKey: 'BBOnJ8Hl47DAVG358QK3oYpu7fC7FxGqKypBWQEnqV07OdOosyBh_MYE6tdgo3LvOiEPavUb6A_vbZv1PQRmUPg' });
+            });
+    })
+
+    .then(function(token) {
+        if (token) {
+            console.log('Token retrieved:', token);
+            document.getElementById('token').value = token;
+            document.querySelector("button[type='submit']").disabled = false; // Enable submit button
+        } else {
+            console.log('No registration token available. Request permission to generate one.');
+        }
+    })
+
+    .catch(function(err) {
+        console.log('Service Worker registration failed: ', err);
+    });
+}
+
+
+        messaging.getToken({ vapidKey: 'fBBOnJ8Hl47DAVG358QK3oYpu7fC7FxGqKypBWQEnqV07OdOosyBh_MYE6tdgo3LvOiEPavUb6A_vbZv1PQRmUPg' }).then((currentToken) => {
+            if (currentToken) {
+                document.getElementById('token').value = currentToken;
+            } else {
+                console.log('No registration token available. Request permission to generate one.');
+            }
+        }).catch((err) => {
+            console.log('An error occurred while retrieving token. ', err);
+        });
+
+        document.getElementById('login-form').addEventListener('submit', function(event) {
+            if (!document.getElementById('token').value) {
+                event.preventDefault();
+                alert('Token not available yet. Please try again.');
+            }
+        });
+    </script>
+</body>
+</html>

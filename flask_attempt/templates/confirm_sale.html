@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Sale</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background: linear-gradient(to right, #004d40, #66bb6a); /* Gradient background */
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            background-color: white;
+            color: #333;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            max-width: 600px;
+            margin: 60px auto;
+        }
+
+        h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #004d40; /* Dark green to match the theme */
+        }
+
+        .cost-info {
+            background-color: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        p {
+            font-size: 18px;
+            margin: 5px 0;
+            color: #004d40; /* Green color for financial information */
+        }
+
+        .btn-confirm {
+            background-color: #004d40; /* Professional dark green */
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            color: white;
+            width: 100%;
+            border-radius: 6px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-confirm:hover {
+            background-color: #337a66; /* Slightly lighter green on hover */
+        }
+
+        .btn-confirm:focus {
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 77, 64, 0.4); /* Focus effect for accessibility */
+        }
+
+        /* Typography tweaks for a cleaner feel */
+        .cost-info p {
+            font-weight: 500;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Confirm Sale for {{ plant[1] }}</h2>
+
+        <div class="cost-info">
+            <p>Total Cost: ${{ total_cost }}</p>
+            <p>Selling Price: ${{ selling_price }}</p>
+        </div>
+
+        <form action="{{ url_for('sell_plant', plant_id=plant_id) }}" method="POST">
+            <input type="hidden" name="total_cost" value="{{ total_cost }}">
+            <input type="hidden" name="selling_price" value="{{ selling_price }}">
+            <button type="submit" class="btn-confirm">Mark as Sold</button>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

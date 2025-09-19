@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+
+    <style>
+       body {
+    background: linear-gradient(to right, #004d40, #66bb6a);
+    color: white;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    justify-content: flex-start; /* Ensure elements stack properly */
+    overflow-x: hidden;
+}
+
+h2 {
+    font-size: 36px;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    margin-top: 0;
+}
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.form-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    flex-direction: row;
+    position: relative;
+    top: 80px; /* Move the search bar up independently */
+}
+
+.plant-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 20px;
+    padding: 20px;
+    margin-top: 100px; /* Move the plant cards up */
+    width: 100%; /* Ensure the plant cards use the full width */
+}
+
+.plant-box {
+    padding: 20px;
+    width: calc(30% - 20px);
+    box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    background-color: #e0e0e0;
+    color: #333;
+}
+
+        button, input[type="text"] {
+            border-radius: 5px;
+            padding: 10px;
+            border: none;
+        }
+        input[type="text"] {
+            width: auto;
+            flex-grow: 1;
+        }
+        button {
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #338a3e;
+        }
+        .red {
+            background-color: #ff6666;
+            color: white;
+        }
+
+        /* Sidebar styles */
+        .sidebar {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #333;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+            z-index: 1000; /* Ensures the sidebar is on top */
+        }
+        .sidebar a {
+            padding: 10px 15px;
+            text-decoration: none;
+            font-size: 25px;
+            color: white;
+            display: block;
+            transition: 0.3s;
+        }
+        .sidebar a:hover {
+            background-color: #575757;
+        }
+        .openbtn {
+            font-size: 20px;
+            cursor: pointer;
+            background-color: #004d40;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1100; /* Higher z-index than sidebar */
+            transition: opacity 0.3s;
+        }
+        .openbtn:hover {
+            background-color: #66bb6a;
+        }
+
+        /* Close button in the sidebar */
+        .sidebar .closebtn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h2>Your Plants</h2>
+
+    <button class="openbtn" id="openSidebar" onclick="openNav()">☰ Open Sidebar</button>
+
+   <!-- Sidebar -->
+<div id="mySidebar" class="sidebar">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
+
+    <!-- Add Plant button in sidebar -->
+    <form action="{{ url_for('plantadd') }}" method="get">
+        <button type="submit" style="width: 100%; padding: 15px; background-color: #004d40; color: white; border: none;">Add Plant</button>
+    </form>
+    
+    <!-- Check Plant Health button in sidebar -->
+    <form action="{{ url_for('planthealth') }}" method="get">
+        <button type="submit" style="width: 100%; padding: 15px; background-color: #004d40; color: white; border: none;">Check Plant Health</button>
+    </form>
+
+    <!-- History button in sidebar -->
+    <form action="{{ url_for('history') }}" method="get">
+        <button type="submit" style="width: 100%; padding: 15px; background-color: #004d40; color: white; border: none;">History</button>
+    </form>
+
+    <form action="{{ url_for('analytics') }}" method="get">
+        <button type="submit" style="width: 100%; padding: 15px; background-color: #004d40; color: white; border: none;">Analytics</button>
+    </form>
+</div>
+<div class="form-container">
+    <form action="{{ url_for('search_plants') }}" method="get" style="display: flex; width: 50%; justify-content: space-between;">
+        <input type="text" name="query" placeholder="Search for plants..." style="margin-top: 0;">
+        <button type="submit">Search</button>
+    </form>
+</div>
+
+<div class="plant-container">
+    {% for plant in plants %}
+    <div class="plant-box" id="plant-{{ plant.plant_id }}">
+        <h3>{{ plant.plant_name }}</h3>
+        <p>Location: {{ plant.location }}</p>
+        <p>Watering Frequency: {{ plant.watering_frequency }} minutes</p>
+        <div>
+            <button onclick="resetTimer({{ plant.plant_id }}, {{ plant.watering_frequency }}); location.reload();">Reset Timer</button>
+            
+            <form action="{{ url_for('deleteplant', plant_id=plant.plant_id) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this plant?');" style="display: inline;">
+                <button type="submit">Delete Plant</button>
+            </form>
+
+            <form action="{{ url_for('editplant', plant_id=plant.plant_id) }}" method="get" style="display: inline;">
+                <button type="submit">Edit Plant</button>
+            </form>
+
+            <form action="{{ url_for('calculate_profit', plant_id=plant.plant_id) }}" method="get" style="display: inline;">
+                <button type="submit" class="btn btn-success">Sell Plant</button>
+            </form>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+ 
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-messaging.js"></script>
+    <script src="{{ url_for('static', filename='firebase-init.js') }}"></script>
+    <script>
+       function openNav() {
+    document.getElementById("mySidebar").style.width = "250px";
+    document.getElementById("openSidebar").style.opacity = "0"; // Hide open button
+}
+
+function closeNav() {
+    document.getElementById("mySidebar").style.width = "0";
+    document.getElementById("openSidebar").style.opacity = "1"; // Show open button
+}
+
+let timers = {};
+
+function resetTimer(plantId, frequency) {
+    fetch(`/reset_timer/${plantId}`, {
+        method: 'POST'
+    }).then(response => response.json())
+      .then(data => {
+          if (data.status === 'success') {
+              const plantBox = document.getElementById('plant-' + plantId);
+              plantBox.classList.remove('red');
+              if (timers[plantId]) {
+                  clearTimeout(timers[plantId]);
+              }
+              timers[plantId] = setTimeout(() => {
+                  plantBox.classList.add('red');
+              }, frequency * 60 * 1000); // Convert minutes to milliseconds
+
+              // Update the server to mark as reset
+              fetch(`/update_plant_state/${plantId}`, {
+                  method: 'POST',
+                  headers: {'Content-Type': 'application/json'}
+              }).then(response => response.json())
+                .then(data => {
+                    if (data.status !== 'success') {
+                        console.error(data.message);
+                    }
+                }).catch(error => console.error('Error:', error));
+          } else {
+              console.error(data.message);
+          }
+      }).catch(error => console.error('Error:', error));
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const plantData = {{ plants | tojson | safe }};
+
+    plantData.forEach(plant => {
+        const plantId = plant.plant_id;
+        const frequency = plant.watering_frequency;
+        fetch(`/get_last_reset/${plantId}`, {
+            method: 'GET'
+        }).then(response => response.json())
+          .then(data => {
+              if (data.status === 'success') {
+                  const lastResetTime = new Date(data.last_reset).getTime();
+                  const currentTime = Date.now();
+                  const elapsedTime = currentTime - lastResetTime;
+                  const remainingTime = (frequency * 60 * 1000) - elapsedTime;
+
+                  const plantBox = document.getElementById('plant-' + plantId);
+
+                  if (remainingTime <= 0) {
+                      // Immediately add red class if overdue
+                      plantBox.classList.add('red');
+                  } else {
+                      // Add red class after remaining time
+                      timers[plantId] = setTimeout(() => {
+                          plantBox.classList.add('red');
+                      }, remainingTime);
+                  }
+              } else {
+                  console.error(data.message);
+              }
+          }).catch(error => console.error('Error:', error));
+    });
+});
+
+    </script>
+</body>
+</html>

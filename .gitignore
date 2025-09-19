@@ -1,0 +1,54 @@
+# Large dataset folders (exclude to reduce repository size)
+train/
+test/
+valid/
+
+# Large model files (optional - you can choose to include these)
+*.h5
+*.keras
+weights_for_model.h5
+
+# Python cache and temporary files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Virtual environments
+venv/
+env/
+.env
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Firebase credentials (should be kept private)
+static/computer-science-ia-floracare-firebase-adminsdk-*.json
+
+# Database configuration files
+*.db
+*.sqlite3
+
+# Log files
+*.log
+
+# Temporary uploads
+uploads/
+temp/
