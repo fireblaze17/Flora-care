@@ -30,14 +30,11 @@ A comprehensive platform integrating computer vision and web technologies to mon
 ## Insights Gained:
 ### Technical:
 - Enhanced understanding of the convolutional neural networks used in image classification tasks.
-- Integration of open-source web-based backends like Flask with modern database communication.
-- Automatic notification pipelines using Firebase.
+- Transfer Learning and its role in using pre-trained models for quick adaptability.
+- Data Augmentation techniques to enhance training datasets artificially.
 
 ### Practical Skills:
 This project instilled new ways to:
 - Pre-process agricultural datasets to highlight problematic leaves and plant regions.
 - Secure user data and ensure scalable and efficient database architectures.
 - Deliver web development interfaces that preserve usability even under endpoint stress testing.
-
-## References:
-Explore the detailed methodology & process by viewing the reference file `projects` -> model6 uploaded on commitX
